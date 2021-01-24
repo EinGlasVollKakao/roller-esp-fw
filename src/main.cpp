@@ -2,19 +2,18 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <bits/stdc++.h>
-using std::string;
 
 #include "settings.h"
 
 void startWifi();
 void startServer();
-void pressButton(const string& btnName);
+void pressButton(const std::string& btnName);
 
 ESP8266WebServer server(80);
 
 // buttons on remote and their pin number
-std::map<string, int> buttons {
-        {"up", 16}, //D0 = GPIO16
+std::map<std::string, int> buttons {
+        {"up", 16}, //D0 = GPIO16added function to
         {"down", 14}, //D5 = GPIO14
         {"top", 12}, //D6 = GPIO12
         {"mid", 13}, //D7 = GPIO13
@@ -71,7 +70,7 @@ void startServer(){
     server.begin();
 }
 
-void pressButton(const string& btnName) {
+void pressButton(const std::string& btnName) {
     const auto & button = buttons.find(btnName);
     digitalWrite(button->second, LOW);
     delay(250);
