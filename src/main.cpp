@@ -1,16 +1,32 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <bits/stdc++.h>
+using std::string;
+
 
 #include "settings.h"
 
 void startWifi();
 void startServer();
+
 ESP8266WebServer server(80);
+std::map<string, int> buttons {
+        {"up", 0},
+        {"down", 5},
+        {"top", 6},
+        {"mid", 7},
+        {"bot", 8}
+};
 
 void setup() {
     Serial.begin(9600);
     Serial.print("\n\n\n");
+
+    buttons
+    for (const auto& button : buttons) {
+        pinMode(button.second, OUTPUT);
+    }
 
     startWifi();
     startServer();
