@@ -1,0 +1,5 @@
+//set settings and rename to settings.h
+
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
+const char* hostName = "HOST_NAME";
