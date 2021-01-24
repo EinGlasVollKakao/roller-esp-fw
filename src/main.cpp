@@ -4,37 +4,40 @@
 #include <bits/stdc++.h>
 using std::string;
 
-
 #include "settings.h"
 
 void startWifi();
 void startServer();
+void pressButton(const string& btnName);
 
 ESP8266WebServer server(80);
+
+// buttons on remote and their pin number
 std::map<string, int> buttons {
-        {"up", 0},
-        {"down", 5},
-        {"top", 6},
-        {"mid", 7},
-        {"bot", 8}
+        {"up", 16}, //D0 = GPIO16
+        {"down", 14}, //D5 = GPIO14
+        {"top", 12}, //D6 = GPIO12
+        {"mid", 13}, //D7 = GPIO13
+        {"bot", 15} //D8 = GPIO15
 };
 
 void setup() {
     Serial.begin(9600);
     Serial.print("\n\n\n");
 
-    buttons
-    for (const auto& button : buttons) {
+    // set all pins from remote buttons to output mode and set them on high
+    for (auto& button : buttons) {
         pinMode(button.second, OUTPUT);
+        digitalWrite(button.second, HIGH);
     }
 
-    startWifi();
-    startServer();
+
+    startWifi(); // connects to wifi
+    startServer(); // setups and starts server
 }
 
 void loop() {
-// write your code here
-    server.handleClient();
+    server.handleClient(); // handle requests
 }
 
 
@@ -42,6 +45,7 @@ void startWifi() {
     Serial.println("Connecting to: ");
     Serial.println(ssid);
 
+    // set hostname and password from settings file
     WiFi.hostname(hostName);
     WiFi.begin(ssid, password);
 
@@ -55,11 +59,21 @@ void startWifi() {
     Serial.println(WiFi.localIP());
 }
 
-void test(){
-    server.send(200, "text/html", "Manuel");
+void startServer(){
+    server.on("/up", []() -> void {
+        pressButton("up");
+        server.send(200);
+    });
+    server.on("/down", []() -> void {
+        pressButton("down");
+        server.send(200);
+    });
+    server.begin();
 }
 
-void startServer(){
-    server.on("/", test);
-    server.begin();
+void pressButton(const string& btnName) {
+    const auto & button = buttons.find(btnName);
+    digitalWrite(button->second, LOW);
+    delay(250);
+    digitalWrite(button->second, HIGH);
 }
